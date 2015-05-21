@@ -56,10 +56,7 @@ keyTitle keyTitles[] = {
 int num_keytitles = sizeof(keyTitles) / sizeof(keyTitles[0]);
 
 #define THREE_FIELD_INDEX 12
-  
-
-
-Screen screens[NUM_SCREENS] = {
+ Screen screens[NUM_SCREENS] = {
                                       {6,
                                       {0,1,2,3,4,5},
                                       {0,1,2,3,4,5},
@@ -84,11 +81,9 @@ void doDataInvert(int field)  // Fixed up due to loss of inverter_layer
     text_layer_set_text_color(s_data_layer[screens[currentScreen].field_layer_map[field]], greenTextColour);
   }
   else { // All other fields invert (sort of!!)
-//    layer_remove_from_parent(text_layer_get_layer(dataInverterPT[field])); 
     layer_set_frame(text_layer_get_layer(dataInverterPT[field]), a);
     layer_set_hidden(text_layer_get_layer(dataInverterPT[field]), false);
     text_layer_set_background_color(dataInverterPT[field], negativeBackgroundColour);
-    // layer_insert_above_sibling(text_layer_get_layer(dataInverterPT[field]), text_layer_get_layer(s_data_layer[screens[currentScreen].field_layer_map[field]]));
     text_layer_set_text_color(s_data_layer[screens[currentScreen].field_layer_map[field]], negativeTextColour);
   }
   
@@ -162,8 +157,6 @@ normalTextColour = GColorWhite;
   layer_set_bounds((Layer *) s_data_layer[7], GRect(0, 0, 288, 60));
   s_data_title[7] = text_layer_create(GRect(0, 140, 144, 28));
 
-  
-  // Four data fields & their titles
   #define FOUR_FIELD_INDEX 8
   #define FOUR_FIELD_MAX 11
   s_data_layer[8] = text_layer_create(GRect(0, 12, 142, 51));
@@ -188,7 +181,6 @@ normalTextColour = GColorWhite;
   
   s_data_title[11] = text_layer_create(GRect(73, 144, 71, 24));
   
-  // Three fields - One big, two small
   //#define THREE_FIELD_INDEX 12
   #define THREE_FIELD_MAX 14
   s_data_layer[12] = text_layer_create(GRect(0, 10, 432, 65));
@@ -205,15 +197,9 @@ normalTextColour = GColorWhite;
   layer_set_frame((Layer *) s_data_layer[14], GRect(73, 91, 71, 51));
   layer_set_bounds((Layer *) s_data_layer[14], GRect(0, 0, 150, 51));
   s_data_title[14] = text_layer_create(GRect(73, 144, 71, 24));
-  
-  
-  // Top title
+
   s_data_layer[TITLE_INDEX] = text_layer_create(GRect(0, 0, 144, 16));
   
-  
-
-  // Set up top title area
-
     text_layer_set_text_color(s_data_layer[TITLE_INDEX], normalTextColour);
     text_layer_set_text_alignment(s_data_layer[TITLE_INDEX], GTextAlignmentCenter);
     text_layer_set_text(s_data_layer[TITLE_INDEX], "StartLine");
@@ -235,7 +221,6 @@ normalTextColour = GColorWhite;
   titleLayer = layer_create(GRect(0, 0, 144, 168));
   layer_insert_below_sibling(titleLayer, (Layer *)s_data_layer[TITLE_INDEX]);
   
-  
   // Now do the data layer - in front of the title layer
   dataLayer = layer_create(GRect(0, 0, 144, 168)); 
   layer_insert_below_sibling(dataLayer, titleLayer); 
@@ -246,8 +231,6 @@ normalTextColour = GColorWhite;
      layer_add_child(dataLayer, text_layer_get_layer(dataInverterPT[ii]));
   }
     
-
-// Create all the fields we will use on all screen layouts  
   int i;
   for (i =0; i < TITLE_INDEX; i++)
     {
@@ -268,68 +251,22 @@ normalTextColour = GColorWhite;
       {
       text_layer_set_font(s_data_layer[i], s_6_font);    
       text_layer_set_font(s_data_title[i], s_title_font);
-    }
-    else if (i >= TWO_FIELD_INDEX && i <= TWO_FIELD_MAX) // This is 2 fields
-      {
-      text_layer_set_font(s_data_layer[i], s_2_font); 
-      text_layer_set_font(s_data_title[i], s_large_title_font);
-    }
-
-    else if (i >= FOUR_FIELD_INDEX && i <= FOUR_FIELD_MAX) // 4 field layout
-      {
-      text_layer_set_font(s_data_layer[i], s_4_font); 
-      text_layer_set_font(s_data_title[i], s_medium_title_font);
-    }
-    else if (i >= THREE_FIELD_INDEX && i <= THREE_FIELD_MAX)
-      {
-      if (i == THREE_FIELD_INDEX) // First field is big
-        {
-        text_layer_set_font(s_data_layer[i], s_3_font); 
-        text_layer_set_font(s_data_title[i], s_large_title_font);
-      } else
-        {
-        text_layer_set_font(s_data_layer[i], s_4_font);    
-        text_layer_set_font(s_data_title[i], s_medium_title_font);        
-      }
-    }      
-   
+    }   
     layer_add_child(titleLayer, text_layer_get_layer(s_data_title[i]));
-    
   }
 
   // Add the heartbeat
- #ifdef PBL_COLOR
  layer_add_child(window_get_root_layer(window), text_layer_get_layer(flash));
- #else
- layer_add_child(window_get_root_layer(window), inverter_layer_get_layer(inverter));
-
-  int ii;
-  for (ii = 0; ii < 6; ii++) {
-     layer_add_child(window_get_root_layer(window), inverter_layer_get_layer(dataInverter[ii]));
-  }
-
-   layer_add_child(window_get_root_layer(window), inverter_layer_get_layer(flash));
-  #endif
-    
-//    layer_add_child(window_get_root_layer(window), text_layer_get_layer(messageOutline)); 
-//    layer_add_child(window_get_root_layer(window), text_layer_get_layer(messageLayer)); 
   
   for (currentScreen = 0; screens[currentScreen].num_fields == 0; currentScreen++)
     ;
-
-
   s_padlockLayer = bitmap_layer_create(GRect(133, 3, 8, 11));
   s_res_padlock = gbitmap_create_with_resource(RESOURCE_ID_PADLOCK);
   bitmap_layer_set_bitmap(s_padlockLayer, s_res_padlock);
   layer_add_child(window_get_root_layer(window), (Layer *)s_padlockLayer);
-  
-  
-
   updatescreen(currentScreen,"277777"); // Make this too long & it crashes the Pebble!!!!!!
   doDataInvert(1);
 }
-
-
 
 static void main_window_unload(Window *window) {
   int i;
@@ -381,10 +318,6 @@ void setField(int i,  bool negNum, char* value)
     gframe = layer_get_frame((Layer *)flm);
     if (textContent.w > gframe.size.w) // Overflowed
       {
-      if (1==1)
-        {
-        }
-
     }
 }
 
